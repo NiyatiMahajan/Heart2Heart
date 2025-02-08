@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Book Reviews and Recommendations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url(depositphotos_690459310-stock-photo-contact-banner-background-concept-customer.jpg);
+            background-size: cover;
+        }
+        .contact-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .contact-title {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contact-container">
+    <h2 class="contact-title">Contact Us</h2>
+    <p>If you have questions, feedback, or book recommendations, feel free to reach out. Your thoughts and suggestions help us improve our site and serve the reading community better.</p>
+    
+    <form action="submit_contact.php" method="POST"> <!-- Action for form submission -->
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea class="form-control" id="message" rows="5" placeholder="Write your message here..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+    </form>
+
+    <hr>
+
+    <h5>Other Ways to Reach Us:</h5>
+    <p><strong>Email:</strong> support@heart2heart.com</p>
+    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+    <p><strong>Social Media:</strong></p>
+    <p>
+        <a href="https://www.facebook.com/bookreviews" target="_blank">Facebook</a> | 
+        <a href="https://twitter.com/bookreviews" target="_blank">Twitter</a> | 
+        <a href="https://www.instagram.com/bookreviews" target="_blank">Instagram</a>
+    </p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

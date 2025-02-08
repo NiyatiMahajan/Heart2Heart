@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mental Health Support Chatbot</title>
+  <style>
+    /* Basic styling for the chat interface */
+    #chat-window {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .user-message {
+      text-align: right;
+      color: blue;
+    }
+    .bot-message {
+      text-align: left;
+      color: green;
+    }
+    #language-selection {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Selection Section -->
+  <div id="language-selection">
+    <label for="language-dropdown">Select Language:</label>
+    <select id="language-dropdown">
+      <option value="en">English</option>
+      <option value="pa">Punjabi</option>
+      <!-- Add more languages as needed -->
+    </select>
+    <button id="start-chat">Start Chat</button>
+  </div>
+
+  <!-- Chat Container (hidden until language is selected) -->
+  <div id="chat-container" style="display:none;">
+    <div id="chat-window"></div>
+    <input type="text" id="user-input" placeholder="Type your message here..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <script>
+    // Predefined translations for each language
+    const translations = {
+      en: {
+        "how are you": "I'm doing great, thanks for asking! How are you feeling today?",
+        "hello": "Hi there! I'm here for you. How are you feeling?",
+        "i'm feeling sad": "I'm really sorry you're feeling that way. Let me try to cheer you up with a joke! Why don't skeletons fight each other? They don't have the guts! 😄",
+        "i'm feeling down": "It's okay to feel down sometimes. You're not alone. Want to hear a joke to lift your spirits? Why don't eggs tell jokes? They might crack up! 😄",
+        "i'm stressed": "Stress can be overwhelming. Take a deep breath. Remember, it's okay to take breaks. How about some advice? Try a quick walk or some deep breathing exercises!",
+        "i'm happy": "That's wonderful to hear! Keep that positive energy going! 😄",
+        "i'm anxious": "I understand that anxiety can be tough. It’s okay to take small steps. How about a calming breathing exercise? Inhale for 4 counts, hold for 4, exhale for 4. Let's try it together! 💆‍♀",
+        "default": "I'm not sure how you're feeling. Would you like to talk more about it? Feel free to share with me."
+      },
+      pa: {
+        "how are you": "ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?",
+        "hello": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡੇ ਲਈ ਹਾਂ। ਤੁਸੀਂ ਕਿਵੇਂ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ?",
+        "ਮੈਂ ਉਦਾਸ ਮਹਿਸੂਸ ਕਰ ਰਿਹਾ ਹਾਂ": "ਮੈਨੂੰ ਮਾਫ਼ ਕਰਨਾ ਹੈ ਕਿ ਤੁਸੀਂ ਉਦਾਸ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ। ਮੈਂ ਤੁਹਾਡਾ ਮੂਡ ਚੰਗਾ ਕਰਨ ਲਈ ਇੱਕ ਚੁਟਕਲਾ ਸੁਣਾਉਂਦਾ ਹਾਂ!",
+        "ਮੈਂ ਨਿਰਾਸ਼ ਮਹਿਸੂਸ ਕਰ ਰਿਹਾ ਹਾਂ": "ਕਦੇ-ਕਦੇ ਉਦਾਸੀ ਹੋਣਾ ਸਹੀ ਹੈ। ਤੁਸੀਂ ਇਕੱਲੇ ਨਹੀਂ ਹੋ। ਕੀ ਤੁਸੀਂ ਆਪਣੇ ਮਨ ਨੂੰ ਹੌਸਲਾ ਦੇਣ ਲਈ ਇੱਕ ਚੁਟਕਲਾ ਸੁਣਨਾ ਚਾਹੋਗੇ?",
+        "ਮੈਂ ਤਣਾਅ ਵਿੱਚ ਹਾਂ": "ਤਣਾਅ ਬਹੁਤ ਜਿਆਦਾ ਹੋ ਸਕਦਾ ਹੈ। ਇੱਕ ਗਹਿਰਾ ਸਾਹ ਲਵੋ ਅਤੇ ਆਰਾਮ ਨਾਲ ਰਹੋ। ਕੁਝ ਸਲਾਹ: ਇੱਕ ਛੋਟੀ ਚਾਲ ਜਾਂ ਗਹਿਰਾ ਸਾਹ!",
+        "i'm happy": "ਇਹ ਸੁਣ ਕੇ ਬਹੁਤ ਖੁਸ਼ੀ ਹੋਈ! ਆਪਣੀ ਖੁਸ਼ੀ ਜਾਰੀ ਰੱਖੋ!",
+        "i'm anxious": "ਮੈਨੂੰ ਪਤਾ ਹੈ ਕਿ ਚਿੰਤਾ ਕਿਵੇਂ ਮਹਿਸੂਸ ਹੁੰਦੀ ਹੈ। ਛੋਟੇ ਕਦਮ ਚੁੱਕੋ। ਇੱਕ ਗਹਿਰਾ ਸਾਹ, ਚਾਰ ਗਿਣਤੀ ਰੁਕੋ, ਫਿਰ ਛੱਡੋ।",
+        "default": "ਮੈਨੂੰ ਪਤਾ ਨਹੀਂ ਕਿ ਤੁਸੀਂ ਕਿਵੇਂ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ। ਕੀ ਤੁਸੀਂ ਇਸ ਬਾਰੇ ਹੋਰ ਗੱਲ ਕਰਨਾ ਚਾਹੋਗੇ?"
+      }
+    };
+
+    // Global variable to store the user's selected language
+    let selectedLanguage = 'en';
+
+    // Function to add messages to the chat window
+    function addMessage(message, sender) {
+      const chatWindow = document.getElementById('chat-window');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', sender + '-message');
+      messageDiv.innerHTML = `<p>${message}</p>`;
+      chatWindow.appendChild(messageDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the latest message
+    }
+
+    // Function to analyze user input and provide an appropriate response in the selected language
+    function handleUserInput() {
+      const userInputElement = document.getElementById('user-input');
+      const userInput = userInputElement.value.trim().toLowerCase();
+      if (userInput === "") return;
+
+      // Display the user's message
+      addMessage(userInput, 'user');
+
+      // Use the translation object for the selected language
+      const langResponses = translations[selectedLanguage];
+      // Check if the user input matches one of the keys; otherwise, use the default response
+      const response = langResponses[userInput] || langResponses["default"];
+
+      // Display the bot response after a short delay
+      setTimeout(() => {
+        addMessage(response, 'bot');
+      }, 1000);
+
+      // Clear the input field
+      userInputElement.value = "";
+    }
+
+    // Attach event listeners for sending messages
+    document.getElementById('send-btn').addEventListener('click', handleUserInput);
+    document.getElementById('user-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        handleUserInput();
+      }
+    });
+
+    // Handle language selection and show the chat interface
+    document.getElementById('start-chat').addEventListener('click', function() {
+      const dropdown = document.getElementById('language-dropdown');
+      selectedLanguage = dropdown.value;
+      
+      // Hide the language selection section and display the chat container
+      document.getElementById('language-selection').style.display = 'none';
+      document.getElementById('chat-container').style.display = 'block';
+      
+      // Optionally, greet the user in the selected language
+      const greetMessage = translations[selectedLanguage]["hello"] || "Hello!";
+      addMessage(greetMessage, 'bot');
+    });
+  </script>
+</body>
+</html>
